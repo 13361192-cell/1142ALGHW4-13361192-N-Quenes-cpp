@@ -24,6 +24,18 @@ bool isSafe(int i, int row) {
     // 若無衝突，回傳 true
     // 否則回傳 false
 
+    // 檢查前面欄位
+    for (int j = 1; j <= i - 1; j++) {
+
+        // 同列
+        if (c[j] == row)
+            return false;
+
+        // 同對角線
+        if (abs(c[j] - row) == abs(j - i))
+            return false;
+    }
+
     return true; // 請修改
 }
 
@@ -37,11 +49,31 @@ void backtrack(int i, int n) {
     // 1. 將 c[1..n] 存入 solutions
     // 2. return
 
+    // 找到完整解
+    if (i > n) {
+
+        solutions.push_back(c);
+
+        return;
+    }
+
+
     // TODO:
     // 對 row = 1 到 n 逐一嘗試
     // 若 isSafe(i, row) 為 true：
     //   1. 設 c[i] = row
     //   2. 遞迴呼叫 backtrack(i + 1, n)
+
+    // 嘗試每一列
+    for (int row = 1; row <= n; row++) {
+
+        if (isSafe(i, row)) {
+
+            c[i] = row;
+
+            backtrack(i + 1, n);
+        }
+    }
 }
 
 // ==============================
@@ -67,6 +99,10 @@ void printBoard(const vector<int>& sol) {
             // TODO:
             // 若第 col 欄皇后在第 row 列，印 "Q "
             // 否則印 ". "
+            if (sol[col] == row)
+                cout << "Q ";
+            else
+                cout << ". ";
         }
         cout << "\n";
     }
@@ -81,7 +117,7 @@ void solveNQueens(int n) {
 
     // TODO:
     // 從第 1 欄開始回溯
-    // backtrack(1, n);
+    backtrack(1, n);
 
     cout << "n = " << n << "\n";
     cout << "Total solutions = " << solutions.size() << "\n";
@@ -90,14 +126,14 @@ void solveNQueens(int n) {
     if (!solutions.empty()) {
         cout << "First solution: ";
         // TODO:
-        // printSolution(solutions[0]);
+        printSolution(solutions[0]);
         cout << "\n";
     }
 
     if (solutions.size() >= 2) {
         cout << "Second solution: ";
         // TODO:
-        // printSolution(solutions[1]);
+        printSolution(solutions[1]);
         cout << "\n";
     }
 
@@ -105,7 +141,7 @@ void solveNQueens(int n) {
     if (n == 8 && !solutions.empty()) {
         cout << "\nOne board for n = 8:\n";
         // TODO:
-        // printBoard(solutions[0]);
+        printBoard(solutions[0]);
     }
 
     cout << "\n";
